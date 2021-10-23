@@ -27,6 +27,7 @@ const getContactById = async (contactId) => {
 
 const removeContact = async(contactId) =>{
     const allContacts = await getAllContacts()
+    //////// first way////////
     // const filtrContact = allContacts.filter(({ id }) => id !== Number(contactId))
     // if (allContacts.length === filtrContact.length) {
     //     console.log(chalk.red('Contact with this ID not found!'));
@@ -35,15 +36,14 @@ const removeContact = async(contactId) =>{
     // await updateContacts(filtrContact)
     // return filtrContact
 
+    //////// second way////////
     const indexContact = allContacts.findIndex(item => item.id === Number(contactId))
     if (indexContact === -1) {
         console.log(chalk.red('Contact with this ID not found!'));
         return null
     }
     const removeContact = allContacts.splice(indexContact, 1)
-    const strUpdatedContacts = JSON.stringify(allContacts)
-    const contacts = await fs.writeFile(pathContacts, strUpdatedContacts)
-    console.log();
+    updateContacts(allContacts)
     return removeContact
 }
 
