@@ -10,6 +10,11 @@ const getAllContacts = async () => {
     return contacts
 }
 
+const updateContacts = async (data) => {
+    const strData = JSON.stringify(data)
+    await fs.writeFile(pathContacts, strData)
+}
+
 const listContacts = async() =>{
  return  await getAllContacts()
 }
@@ -17,32 +22,38 @@ const listContacts = async() =>{
 const getContactById = async (contactId) => {
     const allContacts = await getAllContacts()
     const contact = allContacts.find(item => item.id === Number(contactId))
-  
-    if (!contact) {
-        console.log(chalk.red('contact not found'))
-        return null
-    }
-    console.log(chalk.blue('contact found'))
-    console.log(contact);
     return contact
 }
 
 const removeContact = async(contactId) =>{
     const allContacts = await getAllContacts()
-    const updatedContacts = allContacts.filter(({ id }) => id !== Number(contactId))
-    console.log(updatedContacts)
-    return updatedContacts
+    // const filtrContact = allContacts.filter(({ id }) => id !== Number(contactId))
+    // if (allContacts.length === filtrContact.length) {
+    //     console.log(chalk.red('Contact with this ID not found!'));
+    //     return null
+    // }
+    // await updateContacts(filtrContact)
+    // return filtrContact
+
+    const indexContact = allContacts.findIndex(item => item.id === Number(contactId))
+    if (indexContact === -1) {
+        console.log(chalk.red('Contact with this ID not found!'));
+        return null
+    }
+    const removeContact = allContacts.splice(indexContact, 1)
+    const strUpdatedContacts = JSON.stringify(allContacts)
+    const contacts = await fs.writeFile(pathContacts, strUpdatedContacts)
+    console.log();
+    return removeContact
 }
 
 const addContact = async (name, email, phone) => {
     const allContacts = await getAllContacts()
     const newContact = { id: crypto.randomUUID(), name, email, phone }
     allContacts.push(newContact)
-     const strNewContacts = JSON.stringify(allContacts)
-     await fs.writeFile(pathContacts, strNewContacts)
-    console.log(newContact);
+    await updateContacts(allContacts)
     return newContact
 
 }
 
-module.exports = {listContacts, getContactById, removeContact,addContact};
+module.exports = {listContacts, getContactById, removeContact, addContact};

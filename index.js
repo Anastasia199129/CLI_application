@@ -1,4 +1,3 @@
-const fs = require('fs/promises')
 const chalk = require('chalk')
 const { listContacts, getContactById, removeContact, addContact } = require('./contacts')
 
@@ -19,19 +18,29 @@ const invokeAction = async ({ action, id, name, email, phone }) => {
     try {
         switch (action) {
           case 'list':
-                  await listContacts();
+            const contacts = await listContacts();
+            console.table(contacts);
             break;
       
-            case 'get':
-                await getContactById(id)
+          case 'get':
+            const contactById = await getContactById(id)
+              if (!contactById) {
+                  console.log(chalk.red('contact not found:'))
+                  return null
+               }
+                  console.log(chalk.blue('contact found!'))
+                  console.log(contactById);
             break;
       
           case 'add':
-                addContact(name, email, phone)
-                break;
+            const contact = await addContact(name, email, phone)
+            console.log(chalk.blue('Add new contact'));
+            console.log(contact);
+            break;
       
-            case 'remove':
-                removeContact(id)
+          case 'remove':
+            const updatedContacts = await removeContact(id)
+            console.table(updatedContacts)
             break;
       
           default:
@@ -45,4 +54,5 @@ const invokeAction = async ({ action, id, name, email, phone }) => {
 }
 
 invokeAction(argv);
+
 
