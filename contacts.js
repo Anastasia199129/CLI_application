@@ -1,19 +1,6 @@
-const fs = require('fs/promises')
 const chalk = require('chalk')
 const crypto = require('crypto')
-const path = require('path')
-const pathContacts = path.join(__dirname, "db/contacts.json")
-
-const getAllContacts = async () => {
-    const data = await fs.readFile(pathContacts, 'utf8')
-    const contacts = JSON.parse(data)
-    return contacts
-}
-
-const updateContacts = async (data) => {
-    const strData = JSON.stringify(data)
-    await fs.writeFile(pathContacts, strData)
-}
+const { getAllContacts, updateContacts} = require('./methods')
 
 const listContacts = async() =>{
  return  await getAllContacts()
